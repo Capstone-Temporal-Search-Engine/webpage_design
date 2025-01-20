@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temporal SE</title>
+    <style>
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .center_page {
+            display: flex;
+            flex-direction: column;
+            background-color: lightslategrey;
+            margin: 0 auto;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+        .center_title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .title {
+            font-size: xxx-large;
+        }
+        .center_search {
+            display: block;
+            padding: 20px;
+            max-height: 150px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .fill_top{
+            display: block;
+            flex-grow: 1;
+            max-height: 50px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .fill_bottom{
+            display: block;
+            flex-grow: 1;
+            max-height: 200px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="center_page">
+    <div class="fill_top"></div>
+    <div class="center_title">
+        <h1 class="title"><a href="temporal_search_engine_home.html" target="_self">Temporal SE</a></h1>
+    </div>
+    <div class="center_search">
+        <search>
+            <form action="temporal_search_engine_results.html" method="get">
+                <input type="search"  name="q" required/>
+                <input type="date" name="d" required/>
+                <button type="submit">Search</button>
+            </form>
+        </search>
+    </div>
+    <div class="fill_bottom"></div>
+</body>
+</html>

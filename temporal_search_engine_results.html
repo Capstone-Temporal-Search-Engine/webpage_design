@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title id="title">Temporal SE</title>
+  <script>
+    function display_query() {
+      const params = new URLSearchParams(window.location.search);
+      console.log(params);
+      console.log(params.get("q"));
+      console.log(params.get("d"));
+      const query_string = params.get("q");
+      const date_string = params.get("d");
+      if (query_string && date_string) {
+        document.getElementById("q").value = query_string;
+        document.getElementById("d").value = date_string;
+        document.getElementById("title").textContent = query_string + " | " + date_string + " - Temporal SE";
+      }
+      else {
+        document.getElementById("title").textContent = "Error";
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: lightslategrey;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .search_bar{
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body onload="display_query()">
+  <div class="search_bar">
+    <a href="temporal_search_engine_home.html" target="_self">
+      <h2>TSE</h2 >
+    </a>
+    <search>
+      <form action="temporal_search_engine_results.html" method="get">
+        <input id="q" type="search"  name="q" required/>
+        <input id="d" type="date" name="d" required/>
+        <button type="submit">Search</button>
+      </form>
+    </search>
+  </div>
+</body>
+</html>
