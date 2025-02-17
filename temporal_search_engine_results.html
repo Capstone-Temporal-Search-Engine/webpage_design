@@ -8,13 +8,17 @@
       const params = new URLSearchParams(window.location.search);
       console.log(params);
       console.log(params.get("q"));
-      console.log(params.get("d"));
+      console.log(params.get("d1"));
+      console.log(params.get("d2"));
       const query_string = params.get("q");
-      const date_string = params.get("d");
-      if (query_string && date_string) {
+      const date_string_1 = params.get("d1");
+      const date_string_2 = params.get("d2");
+      if (query_string && date_string_1 && date_string_2) {
         document.getElementById("q").value = query_string;
-        document.getElementById("d").value = date_string;
-        document.getElementById("title").textContent = query_string + " | " + date_string + " - Temporal SE";
+        document.getElementById("d1").value = date_string_1;
+        document.getElementById("d2").value = date_string_2;
+        document.getElementById("title").textContent = query_string + " | " + date_string_1
+                + "~" + date_string_2 + " - Temporal SE";
       }
       else {
         document.getElementById("title").textContent = "Error";
@@ -29,25 +33,116 @@
       text-decoration: none;
       color: inherit;
     }
-    .search_bar{
+    form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    /* Results Page Container */
+    .container{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    /* Search Field Specific*/
+    .search_field{
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-direction: row;
+    }
+    .search_container{
+      display: flex;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .search_input{
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+    .search_button{
+      background-color: #007bff;/* adjust later */
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    .search_button:hover{
+      background-color: #0056b3;
+    }
+    .date_container{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search_date{
+      width: 100%;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+    .date_text{
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    /* Results Styles */
+    .results{
+      margin-top: 20px;
+    }
+    .result{
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .result h3{
+      font-size: 20px;
+      margin: 0;
+      color: #007bff;
+    }
+    .result p{
+      font-size: 16px;
+      color: #555;
+    }
+    .result a{
+      color: #007bff;
+    }
+    .result a:hover{
+      text-decoration: underline;
+    }
+    .result_link{
+      font-size: 14px;
+      color: #777;
     }
   </style>
 </head>
 <body onload="display_query()">
-  <div class="search_bar">
-    <a href="temporal_search_engine_home.html" target="_self">
-      <h2>TSE</h2 >
-    </a>
-    <search>
-      <form action="temporal_search_engine_results.html" method="get">
-        <input id="q" type="search"  name="q" required/>
-        <input id="d" type="date" name="d" required/>
-        <button type="submit">Search</button>
-      </form>
-    </search>
+  <div class="container">
+    <div class="search_field">
+      <a href="temporal_search_engine_home.html" target="_self">
+        <h2>TSE</h2 >
+      </a>
+      <search>
+        <form action="temporal_search_engine_results.html" method="get">
+          <div class="search_container">
+            <input class="search_input" id="q" type="search" name="q" required/>
+            <button class="search_button" type="submit">Search</button>
+          </div>
+          <div class="date_container">
+            <input class="search_date" id="d1" type="date" name="d1" required/>
+            <h4 class="date_text">to</h4>
+            <input class="search_date" id="d2" type="date" name="d2" required/>
+          </div>
+        </form>
+      </search>
+    </div>
+    <div class="results">
+
+    </div>
   </div>
 </body>
 </html>

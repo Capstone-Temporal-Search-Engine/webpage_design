@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Temporal SE</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialized Date 1 is from EPOCH
+            console.log(document.getElementById("d1"));
+            document.getElementById("d1").value = new Date(0).toISOString().split('T')[0];
+            // Final Date 2 is initially current date
+            document.getElementById("d2").value = new Date().toISOString().split('T')[0];
+        });
+    </script>
     <style>
         a {
             text-decoration: none;
@@ -29,12 +38,53 @@
         .title {
             font-size: xxx-large;
         }
-        .center_search {
-            display: block;
+        .search_box {
             padding: 20px;
-            max-height: 150px;
-            flex-shrink: 0;
-            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .search_container{
+            display: flex;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .search_input{
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        .search_button{
+            background-color: #007bff;/* adjust later */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .search_button:hover{
+            background-color: #0056b3;
+        }
+        .date_container{
+            display: flex;
+            margin-top: 10px;
+            align-items: center;
+            gap: 10px;
+        }
+        .search_date{
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+        }
+        .date_text{
+            margin: 10px 0;
+            font-size: 16px;
         }
         .fill_top{
             display: block;
@@ -57,12 +107,18 @@
     <div class="center_title">
         <h1 class="title"><a href="temporal_search_engine_home.html" target="_self">Temporal SE</a></h1>
     </div>
-    <div class="center_search">
+    <div class="search_box">
         <search>
             <form action="temporal_search_engine_results.html" method="get">
-                <input type="search"  name="q" required/>
-                <input type="date" name="d" required/>
-                <button type="submit">Search</button>
+                <div class="search_container">
+                    <input class="search_input" type="search" name="q" required/>
+                    <button class="search_button" type="submit">Search</button>
+                </div>
+                <div class="date_container">
+                    <input id="d1" class="search_date" type="date" name="d1" required/>
+                    <h4 class="date_text">to</h4>
+                    <input id="d2" class="search_date" type="date" name="d2" required/>
+                </div>
             </form>
         </search>
     </div>
