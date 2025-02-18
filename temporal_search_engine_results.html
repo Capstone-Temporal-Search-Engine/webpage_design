@@ -4,12 +4,9 @@
   <meta charset="UTF-8">
   <title id="title">Temporal SE</title>
   <script>
+    // fill in inputs from GET
     function display_query() {
       const params = new URLSearchParams(window.location.search);
-      console.log(params);
-      console.log(params.get("q"));
-      console.log(params.get("d1"));
-      console.log(params.get("d2"));
       const query_string = params.get("q");
       const date_string_1 = params.get("d1");
       const date_string_2 = params.get("d2");
@@ -19,15 +16,71 @@
         document.getElementById("d2").value = date_string_2;
         document.getElementById("title").textContent = query_string + " | " + date_string_1
                 + "~" + date_string_2 + " - Temporal SE";
+        // Would call database/bucket query here
+        search(query_string, date_string_1, date_string_2);
       }
       else {
         document.getElementById("title").textContent = "Error";
       }
     }
+
+    // function to create a search result to append to list of results
+    function create_search_results(title, description, link){
+      // create div for result
+      let result_div = document.createElement("div");
+      result_div.classList.add("result");
+
+      // make title
+      let title_element = document.createElement("h3");
+      let title_link = document.createElement("a");
+      title_link.href = link;
+      title_link.text = title;
+      title_element.appendChild(title_link);
+
+      // make description
+      let description_element = document.createElement("p");
+      description_element.textContent = description;
+
+      // make displayed link
+      let link_element = document.createElement("div");
+      link_element.classList.add("result_link");
+      link_element.textContent = link;
+
+      // append elements to result div and return object
+      result_div.appendChild(title_element);
+      result_div.appendChild(description_element);
+      result_div.appendChild(link_element);
+      return result_div;
+    }
+
+    // function to Query database/bucket and display results
+    function search(query, date1, date2){
+      let results_container = document.getElementById("results")
+
+      // clear result objects
+      results_container.innerHTML = "";
+
+      // Would Query Here, Currently Dummy Data
+      let search_results = [
+        { title: "Result 1", description: "This is the first result.", link: "https://www.example1.edu" },
+        { title: "Result 2", description: "This is the second result.", link: "http://www.example2.com" },
+        { title: "Result 3", description: "This is the third result.", link: "https://www.example3.org" }
+      ]
+
+      // loop through results and add to page
+      search_results.forEach(result => {
+        // additions should be removed during actual queries
+        results_container.appendChild(create_search_results(
+                result.title + " on " + query,
+                result.description + " From " + date1 + " to " + date2,
+                result.link)
+        );
+      })
+    }
   </script>
   <style>
     body {
-      background-color: lightslategrey;
+      background-color: #667483;
     }
     a {
       text-decoration: none;
@@ -94,6 +147,7 @@
       margin-top: 20px;
     }
     .result{
+      background-color: lightslategrey;
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 8px;
@@ -102,21 +156,26 @@
     .result h3{
       font-size: 20px;
       margin: 0;
-      color: #007bff;
+      color: #141c38;
     }
     .result p{
       font-size: 16px;
-      color: #555;
+      color: #000000;
     }
     .result a{
-      color: #007bff;
+      color: #1d2652;
     }
     .result a:hover{
       text-decoration: underline;
     }
     .result_link{
       font-size: 14px;
-      color: #777;
+      color: #ffffff;
+    }
+    @media (max-width: 768px){
+      .container {
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -140,8 +199,12 @@
         </form>
       </search>
     </div>
-    <div class="results">
-
+    <div class="results" id="results">
+      <div class="result">
+        <h3><a href="#">Please Try Again</a></h3>
+        <p>An Error Has Occurred Trying To Display Your Results</p>
+        <div class="result_link">www.TSE.com</div>
+      </div>
     </div>
   </div>
 </body>
