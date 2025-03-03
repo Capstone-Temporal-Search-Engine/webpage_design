@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Temporal SE HTML Dock |</title>
+    <title id="tab_title">Temporal SE HTML Dock |</title>
+    <script>
+        // get requested archived webpage from bucket and fill in relevant information
+        // in tab title, date of archived webpage, link of archived page, ...
+        function get_request() {}
+    </script>
     <style>
         a {
             text-decoration: none;
@@ -15,7 +20,7 @@
             display: flex;
             flex-direction: column;
         }
-        h2 {
+        h2, h3 {
             padding: 20px;
         }
         .top_bar {
@@ -35,6 +40,7 @@
             /*border-bottom-right-radius: 20px;*/
         }
         .bottom_bar {
+            display: flex;
             position: fixed;
             bottom: 0;
             left: 0;
@@ -45,6 +51,8 @@
             text-align: center;
             line-height: 50px;
             z-index: 10;
+            justify-content: center;
+            align-items: center;
             /*border-top-left-radius: 20px;*/
             /*border-top-right-radius: 20px;*/
         }
@@ -61,21 +69,28 @@
         }
     </style>
 </head>
-<body>
+<body onload="get_request()">
     <div class="top_bar">
+        <!--could add title of archived page here-->
         <h2>
             <a href="temporal_search_engine_home.html" target="_self">TSE</a>
         </h2>
     </div>
     <div class="content_container">
         <!--src would be stored html-->
-        <iframe class="overlay_frame" src="Grounded.html"></iframe>
+        <iframe id="archive_dock" class="overlay_frame" src="Grounded.html"></iframe>
     </div>
     <!--    Bottom Bar:
         would contain relevant information, probably link to active webpage
         and date of the stored html, could have future integration
         to allow choosing different archived dates of the webpage
     -->
-    <div class="bottom_bar">Bottom Bar - Additional Info</div>
+    <div class="bottom_bar">
+        <h3>
+            <a id="webpage_link">webpage_link</a>
+        </h3>
+        <div><!--Meant To Provide Extra Spacing?--></div>
+        <h3 id="date_of_archival">date_of_this_archival</h3>
+    </div>
 </body>
 </html>
