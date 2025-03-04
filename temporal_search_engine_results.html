@@ -33,7 +33,7 @@
             // make title
             let title_element = document.createElement("h3");
             let title_link = document.createElement("a");
-            title_link.href = link;
+            title_link.href = "temporal_search_engine_html_dock.html?dock=" + link;
             title_link.text = title;
             title_element.appendChild(title_link);
 
@@ -55,27 +55,48 @@
 
         // function to Query database/bucket and display results
         function search(query, date1, date2){
-            let results_container = document.getElementById("results")
+            // request data
+            const formData = new FormData();
+            formData.append('start_time', Math.floor(new Date(date1).getTime() / 1000).toString());
+            formData.append('end_time', Math.floor(new Date(date2).getTime() / 1000).toString());
+            formData.append('query_term', query);
 
+            // query s3 bucket by promise
+            fetch('http://13.59.202.16/retrieve',{
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()
+            ).then(data => {
+                load_results(data.results)
+            }).catch(error => console.error(error));
+        }
+
+        // load results to page
+        function load_results(results){
+            let results_container = document.getElementById("results")
             // clear result objects
             results_container.innerHTML = "";
 
-            // Would Query Here, Currently Dummy Data
-            let search_results = [
-                { title: "Result 1", description: "This is the first result.", link: "https://www.example1.edu" },
-                { title: "Result 2", description: "This is the second result.", link: "http://www.example2.com" },
-                { title: "Result 3", description: "This is the third result. currently links to example html docker page.", link: "temporal_search_engine_html_dock.html" }
-            ]
+            if (results.length > 0){
+                // sort by most relevant
+                results.sort((a, b) => b[0] - a[0])
 
-            // loop through results and add to page
-            search_results.forEach(result => {
-                // additions should be removed during actual queries
+                // loop through results and add to page
+                results.forEach((result, index) => {
+                    // additions should be removed during actual queries
+                    results_container.appendChild(create_search_results(
+                            "result title " +  index,
+                            `result ${index} description`,
+                            result[1])
+                    );
+                })
+            } else {
                 results_container.appendChild(create_search_results(
-                    result.title + " on " + query,
-                    result.description + " From " + date1 + " to " + date2,
-                    result.link)
-                );
-            })
+                        "Sorry! Your search did not match any documents.",
+                        "Suggestions: Make sure all keywords are spelled correctly - Try different keywords - Try more general keywords - Try less keywords",
+                        'TSE.com'
+                ))
+            }
         }
     </script>
     <style>

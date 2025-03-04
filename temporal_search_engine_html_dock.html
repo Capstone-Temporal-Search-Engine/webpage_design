@@ -6,7 +6,13 @@
     <script>
         // get requested archived webpage from bucket and fill in relevant information
         // in tab title, date of archived webpage, link of archived page, ...
-        function get_request() {}
+        function get_request() {
+            const params = new URLSearchParams(window.location.search);
+            const archived_page = params.get('dock');
+            console.log(archived_page)
+            // get iframe and place source
+            document.getElementById('archive_dock').src = archived_page;
+        }
     </script>
     <style>
         a {
@@ -78,7 +84,7 @@
     </div>
     <div class="content_container">
         <!--src would be stored html-->
-        <iframe id="archive_dock" class="overlay_frame" src="Grounded.html"></iframe>
+        <iframe id="archive_dock" class="overlay_frame" src=""></iframe>
     </div>
     <!--    Bottom Bar:
         would contain relevant information, probably link to active webpage
