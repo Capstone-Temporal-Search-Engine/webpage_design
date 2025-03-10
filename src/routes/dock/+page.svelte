@@ -94,8 +94,7 @@
 	}
 
 	button {
-		margin: 10px;
-		--green: rgb(255, 255, 255);
+		--green: rgb(231, 72, 58);
 		font-size: 15px;
 		padding: 0.7em 2.7em;
 		letter-spacing: 0.06em;
@@ -108,19 +107,19 @@
 		border: 2px solid var(--green);
 		background: linear-gradient(
 			to right,
-			rgba(253, 42, 27, 0.1) 1%,
+			rgba(27, 253, 156, 0.1) 1%,
 			transparent 40%,
-			transparent 40%,
-			rgba(122, 64, 64, 0.94) 100%
+			transparent 60%,
+			rgba(27, 253, 156, 0.1) 100%
 		);
 		color: var(--green);
 		box-shadow:
-			inset 0 0 10px rgba(255, 118, 94, 0.4),
-			0 0 9px 3px rgba(226, 21, 21, 0.1);
+			inset 0 0 10px rgba(27, 253, 156, 0.4),
+			0 0 9px 3px rgba(27, 253, 156, 0.1);
 	}
 
 	button:hover {
-		color: rgb(246, 182, 182);
+		color: #82ffc9;
 		box-shadow:
 			inset 0 0 10px rgba(156, 27, 25, 0.6),
 			0 0 9px 3px rgba(255, 7, 7, 0.87);

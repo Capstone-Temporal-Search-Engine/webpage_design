@@ -146,8 +146,11 @@
 					{#each results as result, index}
 						<div class="result">
 							<h3>
-								<a href={result.url} target="_blank">{result.title}</a>
+								<a href={`/dock?dock=${encodeURIComponent(result.url)}`} target="_self">
+									{result.title}
+								</a>
 							</h3>
+
 							<!-- Optional hidden iframe -->
 							<iframe
 								src={result.url}
@@ -276,6 +279,7 @@
 		justify-content: center;
 		margin-top: 15px;
 	}
+
 	.search_box {
 		background-color: transparent;
 		backdrop-filter: blur(15px);
@@ -287,6 +291,7 @@
 		gap: 15px;
 		animation: floatIn 0.8s ease-out;
 	}
+
 	.form {
 		position: relative;
 		display: flex;
