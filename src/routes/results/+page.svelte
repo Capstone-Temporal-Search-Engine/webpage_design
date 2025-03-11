@@ -31,18 +31,32 @@
 			const data = await response.json();
 			console.log('Fetched results:', data.results);
 
-			// Assuming each result is an array where result[1] is the URL.
+			// Fetch the HTML from S3 and extract the title directly
 			results = await Promise.all(
 				data.results.map(async (result) => {
 					const url = result[1]; // S3 URL
-					const titleResponse = await fetch(
-						`http://localhost:3001/fetch-title?url=${encodeURIComponent(url)}`
-					);
-					const titleData = await titleResponse.json();
-					return {
-						url,
-						title: titleData.title || 'Title Unavailable'
-					};
+
+					try {
+						// Fetch the HTML directly from S3
+						const htmlResponse = await fetch(url);
+						const htmlText = await htmlResponse.text();
+
+						// Parse the HTML to extract the title
+						const parser = new DOMParser();
+						const doc = parser.parseFromString(htmlText, 'text/html');
+						const title = doc.querySelector('title')?.innerText || 'Title Unavailable';
+
+						return {
+							url,
+							title
+						};
+					} catch (error) {
+						console.error(`Error fetching title from ${url}:`, error);
+						return {
+							url,
+							title: 'Title Unavailable'
+						};
+					}
 				})
 			);
 		} catch (error) {
