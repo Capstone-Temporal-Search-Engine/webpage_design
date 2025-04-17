@@ -1,34 +1,39 @@
 <script>
-    let name = '';
     let email = '';
     let websites = '';
     let reason = '';
-    let proof = '';
+    let proof = [];
     let submitted = false;
 
-    const handleSubmit = () => {
-        // You can send this data to an API or console log it for testing
-        const reportData = {
-            name,
-            email,
-            websites,
-            reason,
-            proof,
-        };
+    async function handleSubmit(event){
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('content_type', 'website');
+        formData.append('priority', 'high');
+        formData.append('content_url', websites);
+        formData.append('email', email);
+        formData.append('description', reason);
+        for (let file of proof){
+            formData.append('documents', file);
+        }
 
         // put logic for uploading here
-        console.log('Form submitted:', reportData);
+        const response = await fetch('http://127.0.0.1:5000/create-request', {
+            method: 'POST',
+            body: formData,
+        })
+
+        if (!response.ok) {
+            throw new Error(`Server Error: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log("Form Submitted:", result);
 
         // display submission message
         submitted = true;
-
-        // reset form
-        name = '';
-        email = '';
-        websites = '';
-        reason = '';
-        proof = '';
-    };
+    }
 </script>
 
 <svelte:head>
@@ -62,11 +67,6 @@
             </div>
 
             <form on:submit|preventDefault={handleSubmit} class="form-container" style="flex-direction: column; gap: 1.5rem; align-items: stretch;">
-                <!-- Name -->
-                <div class="form">
-                    <input class="input input-alt" type="text" placeholder="Your Name" bind:value={name} required />
-                </div>
-
                 <!-- Email -->
                 <div class="form">
                     <input class="input input-alt" type="email" placeholder="Your Email" bind:value={email} required />
@@ -74,7 +74,7 @@
 
                 <!-- Websites -->
                 <div class="form">
-                    <textarea class="input input-alt" placeholder="Website Link(s)" bind:value={websites} rows="3" required></textarea>
+                    <textarea class="input input-alt" placeholder="Website Link" bind:value={websites} rows="3" required></textarea>
                 </div>
 
                 <!-- Reason -->
@@ -84,7 +84,7 @@
 
                 <!-- Proof -->
                 <div class="form">
-                    <textarea class="input input-alt" placeholder="Proof of Ownership" bind:value={proof} rows="3" required></textarea>
+                    <input class="input input-alt" type="file" multiple on:change="{e => proof = Array.from(e.target.files)}" />
                 </div>
 
                 <!-- Submit Button -->
