@@ -14,56 +14,43 @@
 	}
 
 	// Fetch results from your backend and use a proxy to get titles
+	// Fetch results from your backend and use a proxy to get titles
+	// Fetch results from your backend and use a proxy to get titles & descriptions
 	async function fetchResults(query, d1, d2) {
-		const formData = new FormData();
-		formData.append('start_time', Math.floor(new Date(d1).getTime() / 1000).toString());
-		formData.append('end_time', Math.floor(new Date(d2).getTime() / 1000).toString());
-		formData.append('query_term', query);
+	const formData = new FormData();
+	formData.append('start_time', Math.floor(new Date(d1).getTime() / 1000).toString());
+	formData.append('end_time', Math.floor(new Date(d2).getTime() / 1000).toString());
+	formData.append('query_term', query);
 
-		try {
-			const response = await fetch('http://13.59.202.16/retrieve', {
-				method: 'POST',
-				body: formData
-			});
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-			const data = await response.json();
-			console.log('Fetched results:', data.results);
-
-			// Fetch the HTML from S3 and extract the title directly
-			results = await Promise.all(
-				data.results.map(async (result) => {
-					const url = result[1]; // S3 URL
-
-					try {
-						// Fetch the HTML directly from S3
-						const htmlResponse = await fetch(url);
-						const htmlText = await htmlResponse.text();
-
-						// Parse the HTML to extract the title
-						const parser = new DOMParser();
-						const doc = parser.parseFromString(htmlText, 'text/html');
-						const title = doc.querySelector('title')?.innerText || 'Title Unavailable';
-
-						return {
-							url,
-							title
-						};
-					} catch (error) {
-						console.error(`Error fetching title from ${url}:`, error);
-						return {
-							url,
-							title: 'Title Unavailable'
-						};
-					}
-				})
-			);
-		} catch (error) {
-			console.error(error);
-			errorMessage = 'Failed to retrieve results. Please try again later.';
+	try {
+		const response = await fetch('http://13.59.202.16/retrieve', {
+			method: 'POST',
+			body: formData
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
 		}
+		const data = await response.json();
+		console.log('Fetched results:', data.data);
+
+		results = data.data.map((result) => {
+			const rawDate = result.s3_url.match(/\/html_files\/(\d{2}-\d{4})\//);
+			const date = rawDate ? rawDate[1].replace('-', '/') : 'Unknown Date';
+
+			return {
+				url: result.s3_url.startsWith('http')
+					? result.s3_url
+					: `https://YOUR_S3_BUCKET_BASE_URL/${result.s3_url}`,
+				title: result.title || 'Title Unavailable',
+				date,
+				description: result.description || 'No description available.'
+			};
+		});
+	} catch (error) {
+		console.error(error);
+		errorMessage = 'Failed to retrieve results. Please try again later.';
 	}
+}
 
 	// Handles form submission and dynamically updates the results
 	async function handleSubmit(event) {
@@ -161,16 +148,13 @@
 						<div class="result">
 							<h3>
 								<a href={`/dock?dock=${encodeURIComponent(result.url)}`} target="_self">
-									{result.title}
+									{result.title} <span class="date">({result.date})</span>
 								</a>
 							</h3>
 
-							<!-- Optional hidden iframe -->
-							<iframe
-								src={result.url}
-								style="display: none"
-								onLoad={(event) => extractTitle(event, index)}
-							></iframe>
+							{#if result.description !== 'No description available.'}
+								<p class="description">{result.description}</p>
+							{/if}
 						</div>
 					{/each}
 				{:else}
@@ -444,6 +428,13 @@
 		transform: translateY(-5px);
 		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 	}
+
+	.date {
+		color: #aaa;
+		font-size: 0.9rem;
+		margin-left: 5px;
+	}
+
 	.result h3 a {
 		font-size: 1.3rem;
 		font-weight: 600;
