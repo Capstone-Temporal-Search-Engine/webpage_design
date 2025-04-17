@@ -104,6 +104,7 @@
 			<li><a href="/about">About</a></li>
 			<li><a href="/help">Help</a></li>
 			<li><a href="/team">Team</a></li>
+			<li><a href="/report">Takedown</a></li>
 		</ul>
 	</nav>
 </header>
