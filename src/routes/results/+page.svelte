@@ -13,60 +13,64 @@
 		query = '';
 	}
 
-	// Fetch results from your backend and use a proxy to get titles
-	// Fetch results from your backend and use a proxy to get titles
-	// Fetch results from your backend and use a proxy to get titles & descriptions
+	// Fetch results from your backend and convert timestamps → human dates
 	async function fetchResults(query, d1, d2) {
-	const formData = new FormData();
-	formData.append('start_time', Math.floor(new Date(d1).getTime() / 1000).toString());
-	formData.append('end_time', Math.floor(new Date(d2).getTime() / 1000).toString());
-	formData.append('query_term', query);
+		const formData = new FormData();
+		formData.append('start_time', Math.floor(new Date(d1).getTime() / 1000).toString());
+		formData.append('end_time',   Math.floor(new Date(d2).getTime() / 1000).toString());
+		formData.append('query_term', query);
 
-	try {
-		const response = await fetch('http://13.59.202.16/retrieve', {
-			method: 'POST',
-			body: formData
-		});
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		try {
+			const response = await fetch('http://13.59.202.16/retrieve', {
+				method: 'POST',
+				body: formData
+			});
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			console.log('Fetched results:', data.data);
+
+			results = data.data.map((result) => {
+				// parse timestamp (seconds) → ms
+				const tsMs = Number(result.timestamps) * 1000;
+				const dObj = new Date(tsMs);
+				// format MM/DD/YYYY
+				const month = String(dObj.getMonth() + 1).padStart(2, '0');
+				const day   = String(dObj.getDate()).padStart(2, '0');
+				const year  = dObj.getFullYear();
+				const date  = `${month}/${day}/${year}`;
+
+				return {
+					url: result.s3_url.startsWith('http')
+						? result.s3_url
+						: `https://YOUR_S3_BUCKET_BASE_URL/${result.s3_url}`,
+					title:       result.title       || 'Title Unavailable',
+					date,  // now “MM/DD/YYYY”
+					description: result.description || 'No description available.'
+				};
+			});
+		} catch (error) {
+			console.error(error);
+			errorMessage = 'Failed to retrieve results. Please try again later.';
 		}
-		const data = await response.json();
-		console.log('Fetched results:', data.data);
-
-		results = data.data.map((result) => {
-			const rawDate = result.s3_url.match(/\/html_files\/(\d{2}-\d{4})\//);
-			const date = rawDate ? rawDate[1].replace('-', '/') : 'Unknown Date';
-
-			return {
-				url: result.s3_url.startsWith('http')
-					? result.s3_url
-					: `https://YOUR_S3_BUCKET_BASE_URL/${result.s3_url}`,
-				title: result.title || 'Title Unavailable',
-				date,
-				description: result.description || 'No description available.'
-			};
-		});
-	} catch (error) {
-		console.error(error);
-		errorMessage = 'Failed to retrieve results. Please try again later.';
 	}
-}
 
 	// Handles form submission and dynamically updates the results
 	async function handleSubmit(event) {
-		event.preventDefault(); // prevent default form submission
+		event.preventDefault();
 		document.title = `${query} | ${d1} ~ ${d2} - Re:Search`;
 		loading = true;
 		await fetchResults(query, d1, d2);
 		loading = false;
 	}
 
-	// On mount, try to fetch initial search parameters from the URL and load results.
+	// On mount, load initial search if params exist
 	onMount(async () => {
 		const params = new URLSearchParams(window.location.search);
 		query = params.get('q') || '';
-		d1 = params.get('d1') || new Date(0).toISOString().split('T')[0];
-		d2 = params.get('d2') || new Date().toISOString().split('T')[0];
+		d1    = params.get('d1') || new Date(0).toISOString().split('T')[0];
+		d2    = params.get('d2') || new Date().toISOString().split('T')[0];
 
 		if (query && d1 && d2) {
 			document.title = `${query} | ${d1} ~ ${d2} - Re:Search`;
@@ -93,7 +97,6 @@
 	/>
 </svelte:head>
 
-<!-- Header remains as in your original code -->
 <header class="navbar">
 	<h1 class="logo"><a href="/">Re:Search</a></h1>
 	<nav class="nav-links">
@@ -106,10 +109,8 @@
 </header>
 
 <main class="content_page">
-	<!-- Search Bar Section: Using a form with on:submit to dynamically update results -->
 	<div class="search_bar_container">
-		<form onsubmit={handleSubmit} class="search_box animate-fade-in">
-			<!-- Animated Search Input -->
+		<form on:submit={handleSubmit} class="search_box animate-fade-in">
 			<div class="form">
 				<input
 					class="input"
@@ -119,9 +120,8 @@
 					placeholder="Search..."
 					required
 				/>
-				<button type="button" class="reset" onclick={clearSearch}>✖</button>
+				<button type="button" class="reset" on:click={clearSearch}>✖</button>
 			</div>
-			<!-- Date Range Selection -->
 			<div class="date_container">
 				<input id="d1" class="search_date" type="date" name="d1" bind:value={d1} required />
 				<h4 class="date_text">to</h4>
@@ -130,7 +130,6 @@
 		</form>
 	</div>
 
-	<!-- Results Section -->
 	<div class="content-container">
 		{#if loading}
 			<div class="loader-container">
@@ -151,7 +150,6 @@
 									{result.title} <span class="date">({result.date})</span>
 								</a>
 							</h3>
-
 							{#if result.description !== 'No description available.'}
 								<p class="description">{result.description}</p>
 							{/if}
