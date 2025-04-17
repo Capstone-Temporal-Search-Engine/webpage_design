@@ -44,7 +44,7 @@
 				return {
 					url: result.s3_url.startsWith('http')
 						? result.s3_url
-						: `https://YOUR_S3_BUCKET_BASE_URL/${result.s3_url}`,
+						: `{result.s3_url}`,
 					title:       result.title       || 'Title Unavailable',
 					date,  // now “MM/DD/YYYY”
 					description: result.description || 'No description available.'
