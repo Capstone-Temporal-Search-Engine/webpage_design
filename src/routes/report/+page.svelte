@@ -19,7 +19,7 @@
         }
 
         // put logic for uploading here
-        const response = await fetch('http://127.0.0.1:5000/create-request', {
+        const response = await fetch('http://13.59.202.16/create-request', {
             method: 'POST',
             body: formData,
         })
@@ -84,8 +84,9 @@
 
                 <!-- Proof -->
                 <div class="form">
-                    <input class="input input-alt" type="file" multiple on:change="{e => proof = Array.from(e.target.files)}" />
+                    <input class="input input-alt" type="file" multiple accept=".jpg, .png, .pdf" on:change="{e => proof = Array.from(e.target.files)}" />
                 </div>
+                <small class="file-hint">Accepted file types: .jpg, .png, .pdf</small>
 
                 <!-- Submit Button -->
                 <button type="submit" class="search_button">Submit Takedown Request</button>
@@ -106,6 +107,26 @@
         padding: 0;
         box-sizing: border-box;
         font-family: 'Montserrat', sans-serif;
+    }
+
+    .file-hint {
+        font-size: 0.95rem;
+        color: rgb(221, 221, 221);
+        margin-top: -10px;
+        margin-bottom: 5px;
+        padding-left: 10px;
+        text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+        font-style: italic;
+        animation: pulseHint 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseHint {
+        0%, 100% {
+            opacity: 0.6;
+        }
+        50% {
+            opacity: 1;
+        }
     }
 
     .success-message {
