@@ -17,11 +17,11 @@
 	async function fetchResults(query, d1, d2) {
 		const formData = new FormData();
 		formData.append('start_time', Math.floor(new Date(d1).getTime() / 1000).toString());
-		formData.append('end_time',   Math.floor(new Date(d2).getTime() / 1000).toString());
+		formData.append('end_time', Math.floor(new Date(d2).getTime() / 1000).toString());
 		formData.append('query_term', query);
 
 		try {
-			const response = await fetch('http://13.59.202.16/retrieve', {
+			const response = await fetch('http://13.59.202.16//retrieve', {
 				method: 'POST',
 				body: formData
 			});
@@ -37,16 +37,14 @@
 				const dObj = new Date(tsMs);
 				// format MM/DD/YYYY
 				const month = String(dObj.getMonth() + 1).padStart(2, '0');
-				const day   = String(dObj.getDate()).padStart(2, '0');
-				const year  = dObj.getFullYear();
-				const date  = `${month}/${day}/${year}`;
+				const day = String(dObj.getDate()).padStart(2, '0');
+				const year = dObj.getFullYear();
+				const date = `${month}/${day}/${year}`;
 
 				return {
-					url: result.s3_url.startsWith('http')
-						? result.s3_url
-						: `{result.s3_url}`,
-					title:       result.title       || 'Title Unavailable',
-					date,  // now “MM/DD/YYYY”
+					url: result.s3_url.startsWith('http') ? result.s3_url : `{result.s3_url}`,
+					title: result.title || 'Title Unavailable',
+					date, // now “MM/DD/YYYY”
 					description: result.description || 'No description available.'
 				};
 			});
@@ -69,8 +67,8 @@
 	onMount(async () => {
 		const params = new URLSearchParams(window.location.search);
 		query = params.get('q') || '';
-		d1    = params.get('d1') || new Date(0).toISOString().split('T')[0];
-		d2    = params.get('d2') || new Date().toISOString().split('T')[0];
+		d1 = params.get('d1') || new Date(0).toISOString().split('T')[0];
+		d2 = params.get('d2') || new Date().toISOString().split('T')[0];
 
 		if (query && d1 && d2) {
 			document.title = `${query} | ${d1} ~ ${d2} - Re:Search`;

@@ -1,0 +1,9 @@
+{
+    "framework": "sveltekit",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".svelte-kit/output",
+    "routes": [
+      { "handle": "filesystem" },
+      { "src": "/(.*)", "dest": "/" }
+    ]
+  }
