@@ -21,7 +21,7 @@
 		formData.append('query_term', query);
 
 		try {
-			const response = await fetch('http://13.59.202.16//retrieve', {
+			const response = await fetch('/api/retrieve', {
 				method: 'POST',
 				body: formData
 			});
