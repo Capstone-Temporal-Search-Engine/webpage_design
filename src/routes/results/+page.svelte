@@ -59,6 +59,7 @@
 	// Handles form submission and dynamically updates the results
 	async function handleSubmit(event) {
 		event.preventDefault();
+		errorMessage = '';
 		document.title = `${query} | ${d1} ~ ${d2} - Re:Search`;
 		loading = true;
 		await fetchResults(query, d1, d2);
