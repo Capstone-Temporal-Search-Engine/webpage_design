@@ -42,9 +42,11 @@
 				const date = `${month}/${day}/${year}`;
 
 				return {
-					url: result.s3_url.startsWith('http') ? result.s3_url : `{result.s3_url}`,
-					title: result.title || 'Title Unavailable',
-					date, // now “MM/DD/YYYY”
+					url: result.s3_url.startsWith('http')
+						? result.s3_url
+						: `https://tp-search-s3-bucket.s3.us-east-2.amazonaws.com/${result.s3_url}`,
+					title:       result.title       || 'Title Unavailable',
+					date,  // now “MM/DD/YYYY”
 					description: result.description || 'No description available.'
 				};
 			});
@@ -102,6 +104,7 @@
 			<li><a href="/about">About</a></li>
 			<li><a href="/help">Help</a></li>
 			<li><a href="/team">Team</a></li>
+			<li><a href="/report">Takedown</a></li>
 		</ul>
 	</nav>
 </header>
