@@ -5,7 +5,7 @@ export async function POST({ request }) {
   // Grab the form data from the client
   const formData = await request.formData();
 
-  // Forward to your HTTP service
+  // Forward to HTTP service
   const res = await fetch('http://13.59.202.16/retrieve', {
     method: 'POST',
     body: formData
